@@ -1,0 +1,77 @@
+schema: '2.0'
+stages:
+  data-split:
+    cmd: python3 src/data_split.py
+    deps:
+    - path: data/train.csv
+      md5: 791e42335500c447273a7dc85f58239e
+      size: 68802655
+    - path: src/data_split.py
+      md5: a6fdd01ead673f13f51fff461f39188c
+      size: 1243
+    outs:
+    - path: data/processed_data/x_test.npy
+      md5: 36877340801fa401a1e17d1dd9895e20
+      size: 6757423
+    - path: data/processed_data/x_train.npy
+      md5: 73e71495240852aafc24956cbe46268c
+      size: 26754905
+    - path: data/processed_data/y_test.npy
+      md5: f0d53a199f1e4e30d68a3e10ed603d33
+      size: 1787368
+    - path: data/processed_data/y_train.npy
+      md5: e0b35bf7f652ebddd46db47797831f7a
+      size: 7148864
+  data-preprocess:
+    cmd: python3 src/data_preprocess.py
+    deps:
+    - path: data/processed_data/x_test.npy
+      md5: 36877340801fa401a1e17d1dd9895e20
+      size: 6757423
+    - path: data/processed_data/x_train.npy
+      md5: 73e71495240852aafc24956cbe46268c
+      size: 26754905
+    - path: src/data_preprocess.py
+      md5: 6e996d4e169ba0d4baa70f71bd0ce1bc
+      size: 2447
+    outs:
+    - path: data/embedding_matrix.npy
+      md5: 7aef37b9fbc950dc9c5e53c017c9b2f5
+      size: 313492928
+    - path: models/tokenizer.pkl
+      md5: 8bdd22dc2a7814f503944888538bac59
+      size: 5733032
+  model-training:
+    cmd: python3 src/model_training.py
+    deps:
+    - path: data/embedding_matrix.npy
+      md5: be0314d7469e80810e7a32a481925457
+      size: 313492928
+    - path: src/model_training.py
+      md5: a7dd32a47366efa91ee9a0774c002a35
+      size: 3503
+    outs:
+    - path: models/toxicity_classifier.h5
+      md5: ca120e829cde7a30651d09d9d6c4a695
+      size: 157465360
+    - path: plots/accuracy.jpg
+      md5: c5d18deaed4276d32c7b28f00336890f
+      size: 23494
+    - path: plots/loss.jpg
+      md5: e6a7dbae98755ab416d703f26f35b985
+      size: 18678
+  model-evaluation:
+    cmd: python3 src/model_evaluation.py
+    deps:
+    - path: data/processed_data/x_test.npy
+      md5: 36877340801fa401a1e17d1dd9895e20
+      size: 6757423
+    - path: data/processed_data/y_test.npy
+      md5: f0d53a199f1e4e30d68a3e10ed603d33
+      size: 1787368
+    - path: models/toxicity_classifier.h5
+      md5: ca120e829cde7a30651d09d9d6c4a695
+      size: 157465360
+    - path: src/model_evaluation.py
+      md5: 63e4850a9942339a7ca0a3d2acf5808d
+      size: 756

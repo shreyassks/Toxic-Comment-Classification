@@ -1,0 +1,36 @@
+stages:
+  data-split:
+    cmd: python3 src/data_split.py
+    deps:
+    - data/train.csv
+    - src/data_split.py
+    outs:
+    - data/processed_data/x_test.npy
+    - data/processed_data/x_train.npy
+    - data/processed_data/y_test.npy
+    - data/processed_data/y_train.npy
+  data-preprocess:
+    cmd: python3 src/data_preprocess.py
+    deps:
+      - data/processed_data/x_train.npy
+      - data/processed_data/x_test.npy
+      - src/data_preprocess.py
+    outs:
+      - models/tokenizer.pkl
+      - data/embedding_matrix.npy
+  model-training:
+    cmd: python3 src/model_training.py
+    deps:
+      - data/embedding_matrix.npy
+      - src/model_training.py
+    outs:
+      - models/toxicity_classifier.h5
+      - plots/accuracy.jpg
+      - plots/loss.jpg
+  model-evaluation:
+    cmd: python3 src/model_evaluation.py
+    deps:
+      - data/processed_data/x_test.npy
+      - data/processed_data/y_test.npy
+      - models/toxicity_classifier.h5
+      - src/model_evaluation.py
