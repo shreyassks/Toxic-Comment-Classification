@@ -3,6 +3,12 @@ import pandas as pd
 from config import *
 import numpy as np
 from data_cleaning import clean_text_column
+import yaml
+
+
+params = yaml.safe_load(open("params.yaml"))["data-split"]
+split = params["split"]
+seed = params["seed"]
 
 
 def sum_of_columns(dataframe, columns):
@@ -22,7 +28,7 @@ def data_split(data):
     data['comment_text'] = clean_text_column(data['comment_text'])
     print("Data Cleaned")
 
-    train, test = train_test_split(data, test_size=0.2)
+    train, test = train_test_split(data, test_size=split, random_state=seed)
     x_train = train['comment_text'].values
     y_train = train[DETECTION_CLASSES].values
 

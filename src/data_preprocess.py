@@ -3,9 +3,15 @@ import pickle
 from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import Tokenizer
 from config import *
-
+import yaml
 import nltk
 nltk.download('omw-1.4')
+
+
+params = yaml.safe_load(open("params.yaml"))["data-preprocess"]
+vocab_size = params["vocab_size"]
+max_seq_length = params["sequence_len"]
+embedding_dim = params["embedding_dim"]
 
 
 def data_preprocess(data, do_load_existing_tokenizer=False):
@@ -19,7 +25,7 @@ def data_preprocess(data, do_load_existing_tokenizer=False):
     print(f'Total of {len(embeddings_index_fasttext)} word vectors are found.')
 
     if not do_load_existing_tokenizer:
-        tokenizer = Tokenizer(num_words=MAX_VOCAB_SIZE)
+        tokenizer = Tokenizer(num_words=vocab_size)
         tokenizer.fit_on_texts(data)
     else:
         with open(TOKENIZER_LOCATION, 'rb') as handle:
@@ -37,10 +43,10 @@ def data_preprocess(data, do_load_existing_tokenizer=False):
         with open(TOKENIZER_LOCATION, 'wb') as handle:
             pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
     # -------------------------------------------------------------------------
-    x_tr = pad_sequences(list_tokenized_train, maxlen=MAX_SEQUENCE_LENGTH, padding='post')
+    x_tr = pad_sequences(list_tokenized_train, maxlen=max_seq_length, padding='post')
     print('Shape of Data Tensor:', x_tr)
     # -------------------------------------------------------------------------
-    embedding_matrix_fasttext = np.random.random((len(word_index) + 1, EMBEDDING_DIMENSION))
+    embedding_matrix_fasttext = np.random.random((len(word_index) + 1, embedding_dim))
     for word, i in word_index.items():
         embedding_vector = embeddings_index_fasttext.get(word)
         if embedding_vector is not None:

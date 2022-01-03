@@ -3,6 +3,7 @@ import numpy as np
 from keras.models import load_model
 from config import *
 from data_preprocess import data_preprocess
+import json
 
 
 def evaluate(model, x_test, y_truth):
@@ -12,6 +13,8 @@ def evaluate(model, x_test, y_truth):
         auc = roc_auc_score(y_truth[:, j], predictions[:, j])
         aucs.append(auc)
     print(f'Average ROC_AUC Score: {np.mean(aucs)}')
+    with open("scores.json", "w") as fd:
+        json.dump({"auc": np.mean(aucs)}, fd, indent=4)
 
 
 if __name__ == '__main__':

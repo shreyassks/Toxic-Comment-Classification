@@ -7,13 +7,25 @@ from keras.models import Model
 from keras.callbacks import ModelCheckpoint
 from config import *
 from data_preprocess import data_preprocess
+import yaml
+
+
+params1 = yaml.safe_load(open("params.yaml"))["data-preprocess"]
+vocab_size = params1["vocab_size"]
+max_seq_length = params1["sequence_len"]
+embedding_dim = params1["embedding_dim"]
+
+params2 = yaml.safe_load(open("params.yaml"))["model-training"]
+batch_size = params2["batch_size"]
+epochs = params2["epochs"]
+val_split = params2["val_split"]
 # -------------------------------------------------------------------------
 
 
 def build_lstm_model(data, target_classes, embeddings, word_index):
-    inp = Input(shape=(MAX_SEQUENCE_LENGTH,), dtype='int32')
-    embedded_sequences = Embedding(word_index+1, EMBEDDING_DIMENSION, weights=[embeddings],
-                                   input_length=MAX_SEQUENCE_LENGTH,
+    inp = Input(shape=(max_seq_length,), dtype='int32')
+    embedded_sequences = Embedding(word_index+1, embedding_dim, weights=[embeddings],
+                                   input_length=max_seq_length,
                                    trainable=False,
                                    name='embeddings')(inp)
     x = LSTM(40, return_sequences=True, name='lstm_layer')(embedded_sequences)
@@ -38,9 +50,9 @@ def build_lstm_model(data, target_classes, embeddings, word_index):
     # -------------------------------------------------------------------------
     history = model.fit(data,
                         target_classes,
-                        batch_size=BATCH_SIZE,
-                        epochs=EPOCHS,
-                        validation_split=VALIDATION_SPLIT,
+                        batch_size=batch_size,
+                        epochs=epochs,
+                        validation_split=val_split,
                         verbose=1)
     # -------------------------------------------------------------------------
     model.save(MODEL_LOCATION)

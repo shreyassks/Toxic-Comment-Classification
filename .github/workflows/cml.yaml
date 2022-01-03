@@ -29,9 +29,9 @@ jobs:
           dvc repro
 
           # Use DVC metrics diff to compare metrics to master
-          # git fetch --prune --unshallow
-          # dvc metrics diff --show-md master >> report.md
-          # cml-send-comment report.md
+          git fetch --prune --unshallow
+          dvc metrics diff --show-md master >> report.md
+          cml-send-comment report.md
 
           # Add figure to report
           cml-publish plots/accuracy.jpg --md >> report1.md

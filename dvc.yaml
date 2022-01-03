@@ -25,8 +25,9 @@ stages:
       - src/model_training.py
     outs:
       - models/toxicity_classifier.h5
-      - plots/accuracy.jpg
-      - plots/loss.jpg
+    plots:
+      - plots/:
+          cache: false
   model-evaluation:
     cmd: python3 src/model_evaluation.py
     deps:
@@ -34,3 +35,6 @@ stages:
       - data/processed_data/y_test.npy
       - models/toxicity_classifier.h5
       - src/model_evaluation.py
+    metrics:
+      - scores.json:
+          cache: false
