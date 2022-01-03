@@ -38,7 +38,7 @@ def make_prediction(input_comment):
             "Neutral": str(result[0][6])
         }
 
-
+#
 comment = gr.inputs.Textbox(lines=20, placeholder="Enter your comment!!")
 
 title = "Toxic Comment Classifier"
