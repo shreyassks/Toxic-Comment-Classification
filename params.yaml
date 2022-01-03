@@ -8,6 +8,6 @@ data-preprocess:
   embedding_dim: 300
 
 model-training:
-  batch_size: 32
-  epochs: 1
+  batch_size: 64
+  epochs: 5
   val_split: 0.2
