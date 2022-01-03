@@ -9,5 +9,5 @@ data-preprocess:
 
 model-training:
   batch_size: 32
-  epochs: 2
+  epochs: 1
   val_split: 0.2
