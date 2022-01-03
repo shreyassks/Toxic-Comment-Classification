@@ -1,4 +1,0 @@
-outs:
-- md5: 6bb1f60881846ff3cf7a49c698a96d52
-  size: 157141360
-  path: toxicity_classifier.h5
