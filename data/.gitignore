@@ -1,2 +1,5 @@
 /train.csv
 /embedding_matrix.npy
+/test.csv
+/test_labels.csv
+/test_set.csv

@@ -10,3 +10,7 @@ seaborn>=0.10.1
 spacy>=3.0.5
 tensorflow>=2.4.1
 PyYAML
+fastapi
+uvicorn
+pydantic
+langdetect

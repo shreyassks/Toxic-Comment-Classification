@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+import tensorflow as tf
 from keras.layers import Dense, Input, LSTM, Dropout
 from keras.layers import GlobalMaxPool1D, Embedding
 from keras.models import Model
@@ -20,6 +21,9 @@ batch_size = params2["batch_size"]
 epochs = params2["epochs"]
 val_split = params2["val_split"]
 # -------------------------------------------------------------------------
+class_weight = {0: 0.000458, 1: 0.004389, 2: 0.000829,
+                3: 0.014644, 4: 0.000889, 5: 0.004982,
+                6: 0.000049}
 
 
 def build_lstm_model(data, target_classes, embeddings, word_index):
@@ -38,7 +42,7 @@ def build_lstm_model(data, target_classes, embeddings, word_index):
     model = Model(inputs=inp, outputs=preds)
     model.compile(loss='binary_crossentropy',
                   optimizer='adam',
-                  metrics=['accuracy'])
+                  metrics=[tf.keras.metrics.AUC()])
     # -------------------------------------------------------------------------
     model.summary()
     # -------------------------------------------------------------------------
@@ -50,6 +54,7 @@ def build_lstm_model(data, target_classes, embeddings, word_index):
     # -------------------------------------------------------------------------
     history = model.fit(data,
                         target_classes,
+                        class_weight=class_weight,
                         batch_size=batch_size,
                         epochs=epochs,
                         validation_split=val_split,
@@ -63,22 +68,22 @@ def build_lstm_model(data, target_classes, embeddings, word_index):
 # -------------------------------------------------------------------------
 def plot_training_history(history):
     # "Accuracy"
-    plt.plot(history.history['accuracy'])
-    plt.plot(history.history['val_accuracy'])
-    plt.title('model accuracy')
-    plt.ylabel('accuracy')
+    plt.plot(history.history['auc'])
+    plt.plot(history.history['val_auc'])
+    plt.title('AUC ROC Curve')
+    plt.ylabel('AUC')
     plt.xlabel('epoch')
     plt.legend(['train', 'validation'], loc='upper left')
-    plt.savefig('plots/accuracy.jpg')
+    plt.savefig('auc.jpg')
 
     # "Loss"
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])
-    plt.title('model loss')
+    plt.title('Model loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(['train', 'validation'], loc='upper left')
-    plt.savefig('plots/loss.jpg')
+    plt.savefig('loss.jpg')
 
 
 def execute():
