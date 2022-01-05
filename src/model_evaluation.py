@@ -12,6 +12,7 @@ def evaluate(model, x_test, y_truth):
     for j in range(len(DETECTION_CLASSES)):
         auc = roc_auc_score(y_truth[:, j], predictions[:, j])
         aucs.append(auc)
+    print(aucs)
     print(f'Average ROC_AUC Score: {np.mean(aucs)}')
     with open("scores.json", "w") as fd:
         json.dump({"auc": np.mean(aucs)}, fd, indent=4)

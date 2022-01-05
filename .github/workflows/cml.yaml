@@ -31,6 +31,6 @@ jobs:
           dvc metrics diff master --show-md >> report.md
 
           # Add figure to report
-          cml-publish plots/accuracy.jpg --md >> report.md
-          cml-publish plots/loss.jpg --md >> report.md
+          cml-publish auc.jpg --md >> report.md
+          cml-publish loss.jpg --md >> report.md
           cml-send-comment report.md
