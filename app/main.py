@@ -80,10 +80,15 @@ def comment_request(company: str, comment: str, start: datetime = time, lang: Op
                            headers={'Content-Type': 'application/json'})
 
     response = result.json()
+    if response["Neutral"] > 0.5:
+        toxic = False
+    else:
+        toxic = True
+
     return {
         "company": company,
         "message": comment,
-        "is_toxic": response["Neutral"],
+        "is_toxic": toxic,
         "time": start,
         "language": lang,
         "toxicity_levels": {
@@ -111,7 +116,7 @@ def predict(comment: Toxicity):
     sequences = tokenizer.texts_to_sequences(input_comment)
     sequences = [[item for sublist in sequences for item in sublist]]
 
-    padded_data = pad_sequences(sequences, maxlen=200)
+    padded_data = pad_sequences(sequences, maxlen=150)
     result = model.predict(padded_data, len(padded_data), verbose=1)
 
     return {

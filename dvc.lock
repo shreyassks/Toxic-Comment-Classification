@@ -32,33 +32,39 @@ stages:
       md5: 7eec7ac8791fba43cc41c5c477f7b92e
       size: 33512228
     - path: src/data_preprocess.py
-      md5: 9c7656f48f5ea0bd8fb43c140a4a0b06
-      size: 2623
+      md5: 56b740d2a420fb42ee443b385095eb34
+      size: 2518
     outs:
     - path: data/embedding_matrix.npy
-      md5: 1ef6f72edd0a0aa37b7bd8337c506897
+      md5: c36ede684eccf51dde823d1063851ea6
       size: 358444928
+    - path: data/processed_data/x_train_tokens.npy
+      md5: 744baafdd25f3eb1524eec088184a648
+      size: 95742728
+    - path: data/word_index.txt
+      md5: 0afb13a09f8aa1330db7709b7f97431a
+      size: 6
     - path: models/tokenizer.pkl
-      md5: 74d403be9ec92949374f14c773a50cc3
-      size: 6627669
+      md5: 7da8443a755ef95517d17af6941c6d2f
+      size: 6627667
   model-training:
     cmd: python3 src/model_training.py
     deps:
     - path: data/embedding_matrix.npy
-      md5: f4ebb01298a6d86e89f6515cccd15355
+      md5: c36ede684eccf51dde823d1063851ea6
       size: 358444928
     - path: src/model_training.py
-      md5: d570b0a693c24cfc4e397de8836531ff
-      size: 3872
+      md5: 50f28d3c60bbb7c3d832188198d1de50
+      size: 3693
     outs:
     - path: auc.jpg
-      md5: 8a0e69140538d574464b114e08d7fd3e
-      size: 22713
+      md5: 96817cb328f734421c3bde0596abef7c
+      size: 22064
     - path: loss.jpg
-      md5: 63220b561e8bf201eada4767acc3efd4
-      size: 18999
+      md5: ecf0651f775102caa9652682ceaef714
+      size: 20070
     - path: models/toxicity_classifier.h5
-      md5: debebeb8cace670f754955063c66f267
+      md5: 3d15e1386b477e6c40e75dbde434580c
       size: 180612432
   model-evaluation:
     cmd: python3 src/model_evaluation.py
@@ -70,12 +76,12 @@ stages:
       md5: fb3f6fa921623491317d186fc25ba885
       size: 3582896
     - path: models/toxicity_classifier.h5
-      md5: debebeb8cace670f754955063c66f267
+      md5: 3d15e1386b477e6c40e75dbde434580c
       size: 180612432
     - path: src/model_evaluation.py
-      md5: a468ce9309c8ce77ca5cff7a896c5c77
-      size: 682
+      md5: 78440b34bc10dc7f20b0b8bc4fcd00c9
+      size: 751
     outs:
     - path: scores.json
-      md5: 1fb4ff6d34c2580fc745e831c7759a65
+      md5: f905ce9196167951bf9a0ab310afa309
       size: 33

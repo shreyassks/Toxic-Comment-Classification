@@ -14,7 +14,31 @@ max_seq_length = params["sequence_len"]
 embedding_dim = params["embedding_dim"]
 
 
-def data_preprocess(data, do_load_existing_tokenizer=False):
+def tokenization(data, name="train"):
+
+    tokenizer = Tokenizer(num_words=vocab_size)
+    tokenizer.fit_on_texts(data)
+    # -------------------------------------------------------------------------
+    list_tokenized_train = tokenizer.texts_to_sequences(data)
+    print('Data Tokenized to Sequences')
+    # -------------------------------------------------------------------------
+    word_index = tokenizer.word_index
+    print(f'Found {len(word_index)} unique tokens')
+    # -------------------------------------------------------------------------
+    print('Saving tokens ...')
+    with open(TOKENIZER_LOCATION, 'wb') as handle:
+        pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    # -------------------------------------------------------------------------
+    x_tr = pad_sequences(list_tokenized_train, maxlen=max_seq_length, padding='post')
+    np.save(f"data/processed_data/x_{name}_tokens.npy", x_tr)
+
+    f = open("data/word_index.txt", "w")
+    integer = len(word_index)
+    f.write(str(integer))
+    f.close()
+
+
+def fast_text_embeddings():
     embeddings_index_fasttext = {}
     with open(EMBEDDING_FILE_LOCATION, encoding='utf-8') as f:
         for line in f:
@@ -24,28 +48,10 @@ def data_preprocess(data, do_load_existing_tokenizer=False):
 
     print(f'Total of {len(embeddings_index_fasttext)} word vectors are found.')
 
-    if not do_load_existing_tokenizer:
-        tokenizer = Tokenizer(num_words=vocab_size)
-        tokenizer.fit_on_texts(data)
-    else:
-        with open(TOKENIZER_LOCATION, 'rb') as handle:
-            tokenizer = pickle.load(handle)
-    print('Data Tokenized-1')
-    # -------------------------------------------------------------------------
-    list_tokenized_train = tokenizer.texts_to_sequences(data)
-    print('Data Tokenized-2')
-    # -------------------------------------------------------------------------
-    word_index = tokenizer.word_index
-    print(f'Found {len(word_index)} unique tokens')
-    # -------------------------------------------------------------------------
-    if not do_load_existing_tokenizer:
-        print('Saving tokens ...')
-        with open(TOKENIZER_LOCATION, 'wb') as handle:
-            pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    # -------------------------------------------------------------------------
-    x_tr = pad_sequences(list_tokenized_train, maxlen=max_seq_length, padding='post')
-    print('Shape of Data Tensor:', x_tr)
-    # -------------------------------------------------------------------------
+    with open(TOKENIZER_LOCATION, 'rb') as handle:
+        tokenizer_model = pickle.load(handle)
+
+    word_index = tokenizer_model.word_index
     embedding_matrix_fasttext = np.random.random((len(word_index) + 1, embedding_dim))
     for word, i in word_index.items():
         embedding_vector = embeddings_index_fasttext.get(word)
@@ -53,13 +59,11 @@ def data_preprocess(data, do_load_existing_tokenizer=False):
             embedding_matrix_fasttext[i] = embedding_vector
     print("Completed! Embedding Matrix")
     np.save("data/embedding_matrix.npy", embedding_matrix_fasttext)
-    # -------------------------------------------------------------------------
-    return len(word_index), x_tr
 
 
 if __name__ == '__main__':
-    x_t = np.load("data/processed_data/x_train.npy", allow_pickle=True)
-    data_preprocess(x_t)
-
+    x_train = np.load("data/processed_data/x_train.npy", allow_pickle=True)
+    tokenization(x_train)
+    fast_text_embeddings()
 
 

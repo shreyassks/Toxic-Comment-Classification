@@ -1,3 +1,5 @@
+/x_train_tokens.npy
+/x_test_tokens.npy
 /x_test.npy
 /x_train.npy
 /y_test.npy

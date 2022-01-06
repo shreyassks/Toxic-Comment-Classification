@@ -8,7 +8,6 @@ from keras.models import Model
 from keras.callbacks import EarlyStopping
 from tensorflow.keras.optimizers import Adam
 from config import *
-from data_preprocess import data_preprocess
 import yaml
 
 
@@ -22,16 +21,20 @@ batch_size = params2["batch_size"]
 epochs = params2["epochs"]
 val_split = params2["val_split"]
 # -------------------------------------------------------------------------
-# class_weight = {0: 0.1590, 1: 1.4905, 2: 2.6980, 3: 2.8939, 4: 14.2920, 5: 16.2248, 6: 47.69}
+class_weight = {0: 1.4905, 1: 2.6980, 2: 2.8939, 3: 14.2920, 4: 16.2248, 5: 47.69, 6: 0.1590}
 
 
-def build_lstm_model(data, target_classes, embeddings, word_index):
+def build_lstm_model(data, target_classes, embeddings):
+    f = open("data/word_index.txt", "r")
+    word_index = int(f.readlines()[0])
+    f.close()
+
     inp = Input(shape=(max_seq_length,), dtype='int32')
     embedded_sequences = Embedding(word_index+1, embedding_dim, weights=[embeddings],
                                    input_length=max_seq_length,
                                    trainable=False,
-                                   name='embeddings')(inp)
-    x = Bidirectional(LSTM(40, return_sequences=True, name='bilstm_layer'))(embedded_sequences)
+                                   name='fast_embeddings')(inp)
+    x = Bidirectional(LSTM(40, return_sequences=True, name='BiLstm_layer'))(embedded_sequences)
     x = GlobalMaxPool1D()(x)
     x = Dropout(0.1)(x)
     x = Dense(20, activation="relu", kernel_initializer='he_uniform')(x)
@@ -49,18 +52,16 @@ def build_lstm_model(data, target_classes, embeddings, word_index):
     # -------------------------------------------------------------------------
     history = model.fit(data,
                         target_classes,
+                        class_weight=class_weight,
                         batch_size=batch_size,
                         epochs=epochs,
                         validation_split=val_split,
                         callbacks=[early_stopping],
                         verbose=1)
-    # -------------------------------------------------------------------------
     model.save(MODEL_LOCATION)
-    # -------------------------------------------------------------------------
     return model, history
 
 
-# -------------------------------------------------------------------------
 def plot_training_history(history):
     # "Accuracy"
     plt.plot(history.history['auc'])
@@ -82,12 +83,11 @@ def plot_training_history(history):
 
 
 def execute():
-    x_train = np.load("data/processed_data/x_train.npy", allow_pickle=True)
-    ind, data = data_preprocess(x_train)
+    x_train = np.load("data/processed_data/x_train_tokens.npy", allow_pickle=True)
     target_classes = np.load("data/processed_data/y_train.npy")
     embeddings = np.load("data/embedding_matrix.npy")
 
-    lstm_model, history = build_lstm_model(data, target_classes, embeddings, ind)
+    lstm_model, history = build_lstm_model(x_train, target_classes, embeddings)
     plot_training_history(history)
 
 
