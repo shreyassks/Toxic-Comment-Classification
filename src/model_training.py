@@ -2,10 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import tensorflow as tf
-from keras.layers import Dense, Input, LSTM, Dropout
+from keras.layers import Dense, Input, LSTM, Dropout, Bidirectional
 from keras.layers import GlobalMaxPool1D, Embedding
 from keras.models import Model
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import EarlyStopping
+from tensorflow.keras.optimizers import Adam
 from config import *
 from data_preprocess import data_preprocess
 import yaml
@@ -21,9 +22,7 @@ batch_size = params2["batch_size"]
 epochs = params2["epochs"]
 val_split = params2["val_split"]
 # -------------------------------------------------------------------------
-class_weight = {0: 0.000458, 1: 0.004389, 2: 0.000829,
-                3: 0.014644, 4: 0.000889, 5: 0.004982,
-                6: 0.000049}
+# class_weight = {0: 0.1590, 1: 1.4905, 2: 2.6980, 3: 2.8939, 4: 14.2920, 5: 16.2248, 6: 47.69}
 
 
 def build_lstm_model(data, target_classes, embeddings, word_index):
@@ -32,32 +31,28 @@ def build_lstm_model(data, target_classes, embeddings, word_index):
                                    input_length=max_seq_length,
                                    trainable=False,
                                    name='embeddings')(inp)
-    x = LSTM(40, return_sequences=True, name='lstm_layer')(embedded_sequences)
+    x = Bidirectional(LSTM(40, return_sequences=True, name='bilstm_layer'))(embedded_sequences)
     x = GlobalMaxPool1D()(x)
     x = Dropout(0.1)(x)
-    x = Dense(30, activation="relu", kernel_initializer='he_uniform')(x)
+    x = Dense(20, activation="relu", kernel_initializer='he_uniform')(x)
     x = Dropout(0.1)(x)
-    preds = Dense(7, activation="sigmoid", kernel_initializer='glorot_uniform')(x)
+    outs = Dense(7, activation="sigmoid", kernel_initializer='glorot_uniform')(x)
     # -------------------------------------------------------------------------
-    model = Model(inputs=inp, outputs=preds)
+    model = Model(inputs=inp, outputs=outs)
     model.compile(loss='binary_crossentropy',
-                  optimizer='adam',
+                  optimizer=Adam(),
                   metrics=[tf.keras.metrics.AUC()])
     # -------------------------------------------------------------------------
     model.summary()
     # -------------------------------------------------------------------------
-    checkpoint = ModelCheckpoint(filepath=MODEL_LOCATION,  # saves the 'best' model
-                                 monitor='val_loss',
-                                 save_best_only=True,
-                                 mode='min',
-                                 save_weights_only=True)
+    early_stopping = EarlyStopping(monitor='val_loss', verbose=1, patience=3, restore_best_weights=True)
     # -------------------------------------------------------------------------
     history = model.fit(data,
                         target_classes,
-                        class_weight=class_weight,
                         batch_size=batch_size,
                         epochs=epochs,
                         validation_split=val_split,
+                        callbacks=[early_stopping],
                         verbose=1)
     # -------------------------------------------------------------------------
     model.save(MODEL_LOCATION)

@@ -1,9 +1,9 @@
 data-preprocess:
-  vocab_size: 100000
-  sequence_len: 200
+  vocab_size: 30000
+  sequence_len: 150
   embedding_dim: 300
 
 model-training:
   batch_size: 32
-  epochs: 2
+  epochs: 3
   val_split: 0.2

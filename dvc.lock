@@ -45,21 +45,21 @@ stages:
     cmd: python3 src/model_training.py
     deps:
     - path: data/embedding_matrix.npy
-      md5: 41330ac628a2de945eeb8e2eb1535f01
+      md5: f4ebb01298a6d86e89f6515cccd15355
       size: 358444928
     - path: src/model_training.py
-      md5: 7bb8bf788599e5d39696c1fe275ca307
-      size: 4029
+      md5: d570b0a693c24cfc4e397de8836531ff
+      size: 3872
     outs:
     - path: auc.jpg
-      md5: 983382aa2f9cf42106c40d28b2d0856f
-      size: 22010
+      md5: 8a0e69140538d574464b114e08d7fd3e
+      size: 22713
     - path: loss.jpg
-      md5: 5f0cb247f3ad2672c8f987933ef6fe10
-      size: 20475
+      md5: 63220b561e8bf201eada4767acc3efd4
+      size: 18999
     - path: models/toxicity_classifier.h5
-      md5: 1c0c2667cd34aa818c64f3725bd22275
-      size: 179941360
+      md5: debebeb8cace670f754955063c66f267
+      size: 180612432
   model-evaluation:
     cmd: python3 src/model_evaluation.py
     deps:
@@ -70,12 +70,12 @@ stages:
       md5: fb3f6fa921623491317d186fc25ba885
       size: 3582896
     - path: models/toxicity_classifier.h5
-      md5: 1c0c2667cd34aa818c64f3725bd22275
-      size: 179941360
+      md5: debebeb8cace670f754955063c66f267
+      size: 180612432
     - path: src/model_evaluation.py
-      md5: 22b212ab0b4ff8a028922f7a45f3d1ea
-      size: 865
+      md5: a468ce9309c8ce77ca5cff7a896c5c77
+      size: 682
     outs:
     - path: scores.json
-      md5: b8377dd28cca48b5b86e963276e78e3a
+      md5: 1fb4ff6d34c2580fc745e831c7759a65
       size: 33
