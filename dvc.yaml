@@ -9,26 +9,21 @@ stages:
     - data/processed_data/x_train.npy
     - data/processed_data/y_test.npy
     - data/processed_data/y_train.npy
-  data-preprocess:
-    cmd: python3 src/data_preprocess.py
-    deps:
-      - data/processed_data/x_train.npy
-      - data/processed_data/x_test.npy
-      - src/data_preprocess.py
-    outs:
-      - models/tokenizer.pkl
-      - data/embedding_matrix.npy
-      - data/processed_data/x_train_tokens.npy
-      - data/word_index.txt
   model-training:
     cmd: python3 src/model_training.py
     deps:
-      - data/embedding_matrix.npy
+      - data/processed_data/x_train.npy
+      - data/processed_data/y_train.npy
       - src/model_training.py
+    params:
+      - model-training.batch_size
+      - model-training.epochs
+      - model-training.val_split
     outs:
       - models/toxicity_classifier.h5
+      - models/tokenizer.pkl
     plots:
-      - loss.jpg:
+      - log_loss.jpg:
           cache: false
       - auc.jpg:
           cache: false
@@ -39,6 +34,11 @@ stages:
       - data/processed_data/y_test.npy
       - models/toxicity_classifier.h5
       - src/model_evaluation.py
+    plots:
+      - confusion_matrix.jpg:
+          cache: false
+      - auc_roc.jpg:
+          cache: false
     metrics:
       - scores.json:
           cache: false

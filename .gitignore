@@ -1,3 +1,4 @@
 # Project exclude paths
 .DS_Store
 venv/
+/lid.176.bin

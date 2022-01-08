@@ -32,40 +32,43 @@ stages:
       md5: 7eec7ac8791fba43cc41c5c477f7b92e
       size: 33512228
     - path: src/data_preprocess.py
-      md5: 56b740d2a420fb42ee443b385095eb34
-      size: 2518
-    outs:
-    - path: data/embedding_matrix.npy
-      md5: c36ede684eccf51dde823d1063851ea6
-      size: 358444928
-    - path: data/processed_data/x_train_tokens.npy
-      md5: 744baafdd25f3eb1524eec088184a648
-      size: 95742728
-    - path: data/word_index.txt
-      md5: 0afb13a09f8aa1330db7709b7f97431a
-      size: 6
-    - path: models/tokenizer.pkl
-      md5: 7da8443a755ef95517d17af6941c6d2f
-      size: 6627667
+      md5: 2a7f3f0365b1ee9fd5285be250e5d3d1
+      size: 1166
+    params:
+      params.yaml:
+        data-preprocess.embedding_dim: 300
+        data-preprocess.sequence_len: 200
+        data-preprocess.vocab_size: 100000
   model-training:
     cmd: python3 src/model_training.py
     deps:
-    - path: data/embedding_matrix.npy
-      md5: c36ede684eccf51dde823d1063851ea6
-      size: 358444928
+    - path: data/processed_data/x_train.npy
+      md5: 7eec7ac8791fba43cc41c5c477f7b92e
+      size: 33512228
+    - path: data/processed_data/y_train.npy
+      md5: f001603922830fd2faee2fea019c904e
+      size: 8936104
     - path: src/model_training.py
-      md5: 50f28d3c60bbb7c3d832188198d1de50
-      size: 3693
+      md5: c1520bcdd58618d5c56daeb6caebf90a
+      size: 4265
+    params:
+      params.yaml:
+        model-training.batch_size: 32
+        model-training.epochs: 2
+        model-training.val_split: 0.2
     outs:
     - path: auc.jpg
-      md5: 96817cb328f734421c3bde0596abef7c
-      size: 22064
-    - path: loss.jpg
-      md5: ecf0651f775102caa9652682ceaef714
-      size: 20070
+      md5: ad40a83ddb8b0b630c5a3a8146b4ed1e
+      size: 22960
+    - path: log_loss.jpg
+      md5: 6b3456bcba173a3083409d5ca25060ba
+      size: 17495
+    - path: models/tokenizer.pkl
+      md5: d76680f4646d56f3fe426a9104616e7f
+      size: 6627669
     - path: models/toxicity_classifier.h5
-      md5: 3d15e1386b477e6c40e75dbde434580c
-      size: 180612432
+      md5: 0a51ee51b113d942d0c985783cb6d18e
+      size: 179941376
   model-evaluation:
     cmd: python3 src/model_evaluation.py
     deps:
@@ -76,12 +79,18 @@ stages:
       md5: fb3f6fa921623491317d186fc25ba885
       size: 3582896
     - path: models/toxicity_classifier.h5
-      md5: 3d15e1386b477e6c40e75dbde434580c
-      size: 180612432
+      md5: 0a51ee51b113d942d0c985783cb6d18e
+      size: 179941376
     - path: src/model_evaluation.py
-      md5: 78440b34bc10dc7f20b0b8bc4fcd00c9
-      size: 751
+      md5: b50ab2515d69432b4cff4c5bcf5c6cd7
+      size: 3141
     outs:
+    - path: auc_roc.jpg
+      md5: 2454caf2b10cd2d53a0d7593d537853b
+      size: 56060
+    - path: confusion_matrix.jpg
+      md5: 596b456e90b9baf6dcbfeb55504f817b
+      size: 123146
     - path: scores.json
-      md5: f905ce9196167951bf9a0ab310afa309
+      md5: 94992aee6989341190690e8dd2449ddf
       size: 33
