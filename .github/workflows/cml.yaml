@@ -32,5 +32,7 @@ jobs:
 
           # Add figure to report
           cml-publish auc.jpg --md >> report.md
-          cml-publish loss.jpg --md >> report.md
+          cml-publish log_loss.jpg --md >> report.md
+          cml-publish auc_roc.jpg --md >> report.md
+          cml-publish confusion_matrix.jpg --md >> report.md
           cml-send-comment report.md
