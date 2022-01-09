@@ -2,7 +2,7 @@ stages:
   data-split:
     cmd: python3 src/data_split.py
     deps:
-    - data/train.csv
+    - data/updated_train.csv
     - src/data_split.py
     outs:
     - data/processed_data/x_test.npy
