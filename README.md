@@ -23,12 +23,16 @@ Discussing things you care about can be difficult. The threat of abuse and haras
 
 - **Model Evaluation:** Used ROC-AUC curves, Confusion matrix, Micro Average Precision and Micro Average Recall to evaluate the trained model
 
+![plot](./auc_roc.jpg)
+
 - **API Creation:** FastAPI was used to create API Endpoints. To detect language of the text, Fast Text's Language Detector Pre-trained model was utilized. 
-Implemented Data Validation, Logging and Exception Handling.
+Implemented Data Validation, Logging and Exception Handling. A threshold of 50% was considered to classify a comment as toxic/non-toxic.
   
 - **Version Control** - This whole project is version controlled for Source Code and Data using Github and DVC. Continuous Integration Pipeline has been created using Github Actions and CML (Continuous Machine Learning)
-Model Experiments performed can also be viewed in DVC Studio [DVC Studio] (https://studio.iterative.ai/team/MLOps-team/views/toxicity_classfier-ovevs0o15p)
+Model Experiments performed can also be viewed in DVC Studio (https://studio.iterative.ai/user/shreyassks/views/toxicity_classfier-qor49yes54)
   
+![plot](./readme_images/DVC_studio.png)
+
 - **Docker Container** - Finally, a docker image has been built and pushed to Docker Hub to launch this project.
 
 ## **Steps to Launch and Test the API Endpoints**
@@ -41,6 +45,8 @@ docker run -d -p 80:80 --name khoros-assignment skshreyas714/toxicity-image:v4
 
 - Open Browser and enter http://127.0.0.1:80/docs
 
+![plot](./readme_images/fastapi.png)
+
 - This would launch a nice GUI from Swagger for FastAPI as shown above
 
 - To test fake API Endpoint with hardcoded values for mandatory fields follow below command. Alternatively you can use the GUI as well to test it easily
@@ -50,9 +56,13 @@ curl -X 'GET' \
   -H 'accept: application/json'
 ```
 
+![plot](./readme_images/fake_api.png)
+
 - To test the actual API Endpoint, please use below command. 
 ```shell
 curl -X 'GET' \
   'http://127.0.0.1/api/toxicity-detection/Samsung/Khoros%20is%20awesome?start=2022-01-09T14%3A11%3A13.236458' \
   -H 'accept: application/json'
 ```
+
+![plot](./readme_images/real_api.png)
