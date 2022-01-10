@@ -40,7 +40,7 @@ Model Experiments performed can also be viewed in DVC Studio (https://studio.ite
 - Launch Docker Container: 
   
 ```sh 
-docker run -d -p 80:80 --name khoros-assignment skshreyas714/toxicity-image:v4
+docker run -d -p 80:80 --name demo skshreyas714/toxicity-image:v4
 ```
 
 - Open Browser and enter http://127.0.0.1:80/docs
