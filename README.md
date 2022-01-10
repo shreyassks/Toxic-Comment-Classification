@@ -15,7 +15,7 @@ Discussing things you care about can be difficult. The threat of abuse and haras
 
 - For a highly imbalanced dataset, Oversampling techniques like SMOTE can be applied for Multi-Class Classification. Similarly, for Multi-Label problem MLSMOTE (Multi Label SMOTE) technique can be applied to up-sample minority class records. But the high dimensional nature of the numerical vectors created from text can sometimes make other forms of data augmentation techniques more appealing.
 
-- **Data Augmentation with Paraphrase Generation:** I used Google's T5 pretrained model to generated paraphrases for minority class labels such as Identity Hate, Severe Toxic and Threat categories. 
+- **Data Augmentation with Paraphrase Generation:** I used Google's T5 pretrained model to generated paraphrases for minority class labels such as Identity Hate, Severe Toxic and Threat categories. (refer to Jupyter Notebooks in notebooks folder)
 
 - **Data Cleaning:** Removed Emojis, links, stopwords, whitespaces, newline characters, repeated words, expanded contractions and normalized text data with lemmatization. This step is crucial in removing irrelevant text and give more importance to less frequent words to help model distinguish among each category
 
